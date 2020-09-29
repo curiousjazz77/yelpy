@@ -17,6 +17,21 @@ class RestaurantCell: UITableViewCell {
     @IBOutlet weak var reviewCountLabel: UILabel!
     @IBOutlet weak var starsImage: UIImageView!
     
+    var r: Restaurant! {
+        didSet {
+            label.text = r.name
+            categoryLabel.text = r.mainCategory
+            phoneLabel.text = r.phone
+            reviewCountLabel.text = String(r.reviews) + " reviews"
+            
+            //set images
+            starsImage.image = Stars.dict[r.rating]!
+            restaurantImage.af_setImage(withURL: r.imageURL!)
+            restaurantImage.layer.cornerRadius = 10
+            restaurantImage.clipsToBounds = true
+        }
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
