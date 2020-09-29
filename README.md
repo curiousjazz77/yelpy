@@ -13,5 +13,5 @@ Restaurant Review App - Yelp Clone
 ![](Yelpy_Lab2.gif)
 
 ## App Walkthrough
-### Lab 1: Search Yelp, Show restaurant details
+### Lab 1: Search Yelp via API calls, Show restaurant details
 ![](Yelpy.gif)
