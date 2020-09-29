@@ -1,5 +1,5 @@
 # yelpy
-Restaurant Review App
+Restaurant Review App - Yelp Clone
 
 ## Checklist
 - [x] Allow users to view Yelp restaurants via the yelp API
