@@ -37,6 +37,7 @@ struct API {
                 print(error.localizedDescription)
             } else if let data = data {
                 
+                
         
 
                 // ––––– TODO: Get data from API and return it using completion

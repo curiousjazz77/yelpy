@@ -9,7 +9,7 @@
 import UIKit
 import AlamofireImage
 
-class RestaurantsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
+class RestaurantsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate{
     
     // ––––– TODO: Add storyboard Items (i.e. tableView + Cell + configurations for Cell + cell outlets)
     
@@ -24,6 +24,10 @@ class RestaurantsViewController: UIViewController, UITableViewDelegate, UITableV
     // add outlet
     var filteredRestaurants: [Restaurant] = []
     
+    // infinite scross
+    var isMoreDataLoading = false
+    var loadingMoreView:InfiniteScrollActivityView?
+    
     
     // ––––– TODO: Add tableView datasource + delegate
     override func viewDidLoad() {
@@ -34,6 +38,16 @@ class RestaurantsViewController: UIViewController, UITableViewDelegate, UITableV
         
         //Search bar delegate
         searchBar.delegate = self
+        
+        // Set up Infinite Scroll loading indicator
+        let frame = CGRect(x: 0, y: tableView.contentSize.height, width: tableView.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
+        loadingMoreView = InfiniteScrollActivityView(frame: frame)
+        loadingMoreView!.isHidden = true
+        tableView.addSubview(loadingMoreView!)
+            
+        var insets = tableView.contentInset
+        insets.bottom += InfiniteScrollActivityView.defaultHeight
+        tableView.contentInset = insets
         
         getAPIData()
         
@@ -90,6 +104,46 @@ class RestaurantsViewController: UIViewController, UITableViewDelegate, UITableV
         return cell
     }
     
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let scrollOffsetThreshold = tableView.contentSize.height - tableView.bounds.size.height
+        if (!isMoreDataLoading){
+            if offsetY >  scrollOffsetThreshold && tableView.isDragging {
+                isMoreDataLoading = true
+                let frame = CGRect(x:0, y: tableView.contentSize.height,
+                                   width:tableView.bounds.size.width,
+                                   height: InfiniteScrollActivityView.defaultHeight)
+                
+                
+                loadingMoreView?.frame = frame
+                loadingMoreView!.startAnimating()
+                
+                fetchMoreData()
+            
+        }
+        }
+    }
+    
+    func fetchMoreData(){
+
+            API.getRestaurants() { (restaurants) in
+                    guard let restaurants = restaurants else {
+                        return
+                    }
+                        
+                        // Update flag
+                        self.isMoreDataLoading = false
+
+                        // Stop the loading indicator
+                        self.loadingMoreView!.stopAnimating()
+                        
+                        self.restaurantsArray.append(contentsOf: restaurants)
+                        self.filteredRestaurants = self.restaurantsArray
+                        self.tableView.reloadData()
+                    }
+    }
+    
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
@@ -132,6 +186,43 @@ extension RestaurantsViewController: UISearchBarDelegate {
         searchBar.resignFirstResponder() //remove keyboard
         filteredRestaurants = restaurantsArray
         tableView.reloadData()
+    }
+}
+
+
+class InfiniteScrollActivityView: UIView {
+    var activityIndicatorView: UIActivityIndicatorView = UIActivityIndicatorView()
+    static let defaultHeight:CGFloat = 60.0
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        setupActivityIndicator()
+    }
+    
+    override init(frame aRect: CGRect) {
+        super.init(frame: aRect)
+        setupActivityIndicator()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        activityIndicatorView.center = CGPoint(x: self.bounds.size.width/2, y: self.bounds.size.height/2)
+    }
+    
+    func setupActivityIndicator() {
+        activityIndicatorView.style = .medium
+        activityIndicatorView.hidesWhenStopped = true
+        self.addSubview(activityIndicatorView)
+    }
+    
+    func stopAnimating() {
+        self.activityIndicatorView.stopAnimating()
+        self.isHidden = true
+    }
+    
+    func startAnimating() {
+        self.isHidden = false
+        self.activityIndicatorView.startAnimating()
     }
 }
 
