@@ -8,8 +8,10 @@ Restaurant Review App
 - [x] Implement SearchBar for your Restaurants
 - [x] Infinite Scrolling with Scroll Activity Animation
 
-## App Walkthrough - Lab 2 (Detail View per Restaurant, Search, Infinite Scroll)
+## App Walkthrough
+### Lab 2: Detail View per Restaurant, Search, Infinite Scroll w/ Activity Animation
 ![](Yelpy_Lab2.gif)
 
-## App Walkthrough - Lab 1 (Search Yelp, Show restaurant details)
+## App Walkthrough
+### Lab 1: Search Yelp, Show restaurant details
 ![](Yelpy.gif)
