@@ -9,7 +9,7 @@ Restaurant Review App
 - [x] Infinite Scrolling with Scroll Activity Animation
 
 ## App Walkthrough - Lab 2 w/ Bonus
-![]()
+![](Yelpy_Lab2.gif)
 
 ## App Walkthrough - Lab 1 w/ Bonus
 ![](Yelpy.gif)
